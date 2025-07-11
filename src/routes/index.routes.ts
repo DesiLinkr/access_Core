@@ -1,9 +1,8 @@
 import { Router } from "express";
+import healthRouter from "./health.route";
 
-const router = Router();
+const routes = Router();
 
-router.get("/health", (_req, res) => {
-  res.status(200).json({ message: "OKK" });
-});
+routes.use("/health", healthRouter);
 
-export default router;
+export default routes;
