@@ -4,7 +4,12 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "ts-node run-both-tests.ts",
+    "test:unit": "jest --config=tests/setup/jest.config.unit.ts",
+    "test:integration": "jest --config=tests/setup/jest.config.integration.ts",
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/src/index.js"
   },
   "keywords": [],
   "author": "",
