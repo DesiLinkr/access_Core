@@ -1,0 +1,11 @@
+export const CREATE_SESSIONS_TABLE = `
+  CREATE TABLE IF NOT EXISTS sessions (
+    id SERIAL PRIMARY KEY,
+    user_id UUID NOT NULL,
+    refeshtoken TEXT NOT NULL UNIQUE,
+    ip INET NOT NULL,
+    user_agent TEXT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP + INTERVAL '7 days'
+  );
+`;
