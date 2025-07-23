@@ -10,12 +10,16 @@ export class TokenUtil {
   public genrateRefeshToken = (user_id: string) => {
     return this.jwt.sign({ user_id }, "iid");
   };
-
-  public decode = (token: string) => {
-    return this.jwt.decode(token);
-  };
   public encryptToken = (token: string) => {
     return crypto.createHash("sha256").update(token).digest("hex");
+  };
+
+  public compareTokens = (
+    encrypedToken: string,
+    refeshtoken: string
+  ): boolean => {
+    const hashedToken = this.encryptToken(refeshtoken);
+    return encrypedToken === hashedToken;
   };
   public genrateAccessToken = (user_id: string) => {
     return this.jwt.sign({ user_id }, "idid");
@@ -25,6 +29,10 @@ export class TokenUtil {
   };
 
   public verifyRefreshToken(token: string): any {
-    return this.jwt.verify(token, "iid");
+    try {
+      return this.jwt.verify(token, "iid");
+    } catch (err) {
+      return null;
+    }
   }
 }
