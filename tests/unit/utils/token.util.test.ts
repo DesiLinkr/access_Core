@@ -18,12 +18,13 @@ describe("TokenUtil", () => {
     expect(payload.user_id).toBe(userId);
   });
 
-  it("should decode a token", () => {
-    const accessToken = tokenUtil.genrateAccessToken(userId);
-    const decoded = tokenUtil.decode(accessToken) as any;
-    expect(decoded.user_id).toBe(userId);
-  });
+  it("should return true when encrypted token matches hashed refresh token", () => {
+    const refreshToken = "my_refresh_token";
+    const encryptedToken = tokenUtil.encryptToken(refreshToken); // simulate stored encrypted token
 
+    const result = tokenUtil.compareTokens(encryptedToken, refreshToken);
+    expect(result).toBe(true);
+  });
   it("should encrypt a token", () => {
     const token = "sometoken";
     const encrypted = tokenUtil.encryptToken(token);

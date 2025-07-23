@@ -1,12 +1,13 @@
 import express, { Application } from "express";
 import routes from "./routes/index.routes";
 import "dotenv/config";
-
+import cookieParser from "cookie-parser";
 class App {
   private express: Application;
   private PORT: number;
 
   constructor() {
+    this.PORT = 8083;
     this.express = express();
     this.middleware();
     this.routes();
@@ -15,6 +16,7 @@ class App {
 
   private middleware = () => {
     this.express.use(express.json());
+    this.express.use(cookieParser());
   };
 
   private routes = () => {
