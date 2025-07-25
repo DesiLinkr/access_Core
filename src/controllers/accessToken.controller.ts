@@ -1,29 +1,24 @@
 import { Request, Response } from "express";
-import { SessionService } from "../services/session.service";
+import { AccessTokenService } from "../services/accessToken.service";
 
-export class SessionController {
-  private readonly sessionService;
-
-  constructor(sessionService?: SessionService) {
-    this.sessionService = sessionService ?? new SessionService();
+export class AccessTokenController {
+  private readonly accessTokenservice;
+  constructor(accessTokenservice?: AccessTokenService) {
+    this.accessTokenservice = accessTokenservice ?? new AccessTokenService();
   }
-
-  public verifySession = async (req: Request, res: Response) => {
+  public issueAccessToken = async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refresh_token;
     try {
-      const refreshToken = req.cookies.refresh_token;
-
       if (!(req as any).clientInfo) {
         return res.status(400).json({ message: "bad request" });
       }
 
       const { ip, user_agent } = (req as any).clientInfo;
-
-      const result: any = await this.sessionService.verify(
+      const result: any = await this.accessTokenservice.generateFromRefresh(
         refreshToken,
         ip,
         user_agent
       );
-
       if ("error" in result) {
         res.status(result.status).json({ message: result.error });
         return;

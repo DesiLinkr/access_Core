@@ -1,13 +1,15 @@
 import { Router } from "express";
 import { requestMeta } from "../middlewares/requestMeta";
-import { SessionController } from "../controllers/session.controller";
-const sessionController = new SessionController();
+
+import { AccessTokenController } from "../controllers/accessToken.controller";
+
+const accessTokencontroller = new AccessTokenController();
 const acesssRouter = Router();
 
 acesssRouter.get(
-  "/session/verify",
+  "/token/refresh",
   requestMeta,
-  sessionController.verifySession
+  accessTokencontroller.issueAccessToken
 );
 
 export default acesssRouter;
