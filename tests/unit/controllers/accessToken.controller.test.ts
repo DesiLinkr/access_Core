@@ -1,19 +1,19 @@
 import { Request, Response } from "express";
-import { SessionController } from "../../../src/controllers/session.controller";
-import { SessionService } from "../../../src/services/session.service";
+import { AccessTokenController } from "../../../src/controllers/accessToken.controller";
+import { AccessTokenService } from "../../../src/services/accessToken.service";
 
-describe("verifySession controller", () => {
-  let controller: SessionController;
-  let sessionServiceMock: jest.Mocked<SessionService>;
+describe("AccessToken controller", () => {
+  let controller: AccessTokenController;
+
+  let accessTokenServiceMock: jest.Mocked<AccessTokenService>;
 
   beforeEach(() => {
-    sessionServiceMock = {
-      verify: jest.fn(),
-    } as unknown as jest.Mocked<SessionService>;
+    accessTokenServiceMock = {
+      generateFromRefresh: jest.fn(),
+    } as unknown as jest.Mocked<AccessTokenService>;
 
-    controller = new SessionController(sessionServiceMock);
+    controller = new AccessTokenController(accessTokenServiceMock);
   });
-
   it("should return 400 if refresh token is missing", async () => {
     const req = { cookies: {} } as Partial<Request> as Request;
     const res = {
@@ -21,7 +21,7 @@ describe("verifySession controller", () => {
       json: jest.fn(),
     } as unknown as Response;
 
-    await controller.verifySession(req, res);
+    await controller.issueAccessToken(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ message: "bad request" });
@@ -37,7 +37,7 @@ describe("verifySession controller", () => {
       json: jest.fn(),
     } as unknown as Response;
 
-    await controller.verifySession(req, res);
+    await controller.issueAccessToken(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
     expect(res.json).toHaveBeenCalledWith({ message: "bad request" });
@@ -54,35 +54,17 @@ describe("verifySession controller", () => {
       json: jest.fn(),
     } as unknown as Response;
 
-    sessionServiceMock.verify.mockRejectedValue(new Error("Mock error"));
+    accessTokenServiceMock.generateFromRefresh.mockRejectedValue(
+      new Error("Mock error")
+    );
 
-    await controller.verifySession(req, res);
+    await controller.issueAccessToken(req, res);
 
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith("Internal server error");
   });
 
-  it("should return result from sessionService.verify", async () => {
-    const req = {
-      cookies: { refresh_token: "mock-refresh-token" },
-      clientInfo: { ip: "mock-ip", user_agent: "mock-user-agent" },
-    } as unknown as Partial<Request> as Request;
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    } as unknown as Response;
-
-    const mockResult = { status: 200 };
-    sessionServiceMock.verify.mockResolvedValue(mockResult);
-
-    await controller.verifySession(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(mockResult);
-  });
-
-  it("should return error from sessionService.verify if result contains 'error'", async () => {
+  it("should return error from  accessTokenService.generateFromRefresh if result contains 'error'", async () => {
     const req = {
       cookies: { refresh_token: "mock-refresh-token" },
       clientInfo: { ip: "mock-ip", user_agent: "mock-user-agent" },
@@ -94,11 +76,31 @@ describe("verifySession controller", () => {
     } as unknown as Response;
 
     const mockResult = { error: "Invalid token", status: 401 };
-    sessionServiceMock.verify.mockResolvedValue(mockResult);
+    accessTokenServiceMock.generateFromRefresh.mockResolvedValue(mockResult);
 
-    await controller.verifySession(req, res);
+    await controller.issueAccessToken(req, res);
 
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ message: "Invalid token" });
+  });
+
+  it("should return result from accessTokenService.generateFromRefresh", async () => {
+    const req = {
+      cookies: { refresh_token: "mock-refresh-token" },
+      clientInfo: { ip: "mock-ip", user_agent: "mock-user-agent" },
+    } as unknown as Partial<Request> as Request;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    const mockResult = { access_token: "eiiie" };
+    accessTokenServiceMock.generateFromRefresh.mockResolvedValue(mockResult);
+
+    await controller.issueAccessToken(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(mockResult);
   });
 });
