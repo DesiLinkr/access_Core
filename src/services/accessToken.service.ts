@@ -51,6 +51,6 @@ export class AccessTokenService {
       };
     }
     const access_token = this.tokenUtil.genrateAccessToken(decode.user_id);
-    return { sessionId: decode.id, access_token };
+    return { access_token };
   };
 }
