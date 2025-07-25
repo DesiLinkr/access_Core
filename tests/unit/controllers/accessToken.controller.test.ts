@@ -95,7 +95,7 @@ describe("AccessToken controller", () => {
       json: jest.fn(),
     } as unknown as Response;
 
-    const mockResult = { access_token: "eiiie" };
+    const mockResult = { sessionId: "sisi", access_token: "eiiie" };
     accessTokenServiceMock.generateFromRefresh.mockResolvedValue(mockResult);
 
     await controller.issueAccessToken(req, res);

@@ -8,7 +8,9 @@ export class TokenUtil {
     this.crypto = crypto;
   }
   public genrateRefeshToken = (user_id: string) => {
-    return this.jwt.sign({ user_id }, `${process.env.RefreshToken}`);
+    return this.jwt.sign({ user_id }, `${process.env.RefreshToken}`, {
+      expiresIn: "7d",
+    });
   };
   public encryptToken = (token: string) => {
     return crypto.createHash("sha256").update(token).digest("hex");
@@ -22,7 +24,9 @@ export class TokenUtil {
     return encrypedToken === hashedToken;
   };
   public genrateAccessToken = (user_id: string) => {
-    return this.jwt.sign({ user_id }, `${process.env.AccessToken}`);
+    return this.jwt.sign({ user_id }, `${process.env.AccessToken}`, {
+      expiresIn: "15m",
+    });
   };
   public verifyAccessToken = (token: string) => {
     return this.jwt.verify(token, `${process.env.AccessToken}`);
