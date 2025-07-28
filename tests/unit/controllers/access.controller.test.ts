@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AccessTokenController } from "../../../src/controllers/accessToken.controller";
+import { AccessTokenController } from "../../../src/controllers/access.controller";
 import { AccessTokenService } from "../../../src/services/accessToken.service";
 
 describe("AccessToken controller", () => {
