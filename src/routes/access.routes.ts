@@ -11,5 +11,6 @@ acesssRouter.get(
   requestMeta,
   accessTokencontroller.issueAccessToken
 );
+acesssRouter.get("/me", requestMeta, accessTokencontroller.getUserInfo);
 
 export default acesssRouter;

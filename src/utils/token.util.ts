@@ -1,5 +1,6 @@
 import jsonwebtoken from "jsonwebtoken";
 import crypto from "crypto";
+import { Request } from "express";
 export class TokenUtil {
   private readonly jwt;
   private readonly crypto;
@@ -43,4 +44,12 @@ export class TokenUtil {
       return null;
     }
   }
+
+  extractToken = (authHeader: any) => {
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return null;
+    }
+
+    return authHeader.split(" ")[1];
+  };
 }

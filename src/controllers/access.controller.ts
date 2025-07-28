@@ -28,4 +28,11 @@ export class AccessTokenController {
       res.status(500).json("Internal server error");
     }
   };
+  public getUserInfo = (req: Request, res: Response) => {
+    const authHeader = req.headers["authorization"];
+    if (!(req as any).clientInfo) {
+      return res.status(400).json({ message: "bad request" });
+    }
+    const { ip, user_agent } = (req as any).clientInfo;
+  };
 }

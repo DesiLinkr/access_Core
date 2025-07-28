@@ -44,4 +44,11 @@ export class SessionsRepository {
       [user_id, new Date(Date.now() - 7 * 86400000).getTime()]
     );
   };
+
+  public getSessionbyId = async (sessionId: string) => {
+    return await this.database.query(
+      "SELECT * From sessions from WHERE id=$1",
+      [sessionId]
+    );
+  };
 }
