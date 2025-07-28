@@ -3,6 +3,7 @@ import { TokenUtil } from "../../../src/utils/token.util";
 describe("TokenUtil", () => {
   const tokenUtil = new TokenUtil();
   const userId = "test-user-id";
+  const session_id = "1";
 
   it("should generate and verify a refresh token", () => {
     const refreshToken = tokenUtil.genrateRefeshToken(userId);
@@ -12,7 +13,7 @@ describe("TokenUtil", () => {
   });
 
   it("should generate and verify an access token", () => {
-    const accessToken = tokenUtil.genrateAccessToken(userId);
+    const accessToken = tokenUtil.genrateAccessToken(userId, session_id);
     expect(typeof accessToken).toBe("string");
     const payload = tokenUtil.verifyAccessToken(accessToken) as any;
     expect(payload.user_id).toBe(userId);
