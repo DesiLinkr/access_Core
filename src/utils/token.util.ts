@@ -23,10 +23,14 @@ export class TokenUtil {
     const hashedToken = this.encryptToken(refeshtoken);
     return encrypedToken === hashedToken;
   };
-  public genrateAccessToken = (user_id: string) => {
-    return this.jwt.sign({ user_id }, `${process.env.AccessToken}`, {
-      expiresIn: "15m",
-    });
+  public genrateAccessToken = (user_id: string, session_id: string) => {
+    return this.jwt.sign(
+      { user_id, session_id },
+      `${process.env.AccessToken}`,
+      {
+        expiresIn: "15m",
+      }
+    );
   };
   public verifyAccessToken = (token: string) => {
     return this.jwt.verify(token, `${process.env.AccessToken}`);

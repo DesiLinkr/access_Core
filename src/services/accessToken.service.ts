@@ -50,7 +50,10 @@ export class AccessTokenService {
         status: 401,
       };
     }
-    const access_token = this.tokenUtil.genrateAccessToken(decode.user_id);
-    return { sessionId: decode.id, access_token };
+    const access_token = this.tokenUtil.genrateAccessToken(
+      decode.user_id,
+      decode.id
+    );
+    return { access_token };
   };
 }
