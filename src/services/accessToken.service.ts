@@ -1,4 +1,5 @@
 import { SessionsRepository } from "../repositories/sessions.repository";
+import { getUserInfoById } from "../utils/grpc.util";
 import { TokenUtil } from "../utils/token.util";
 
 export class AccessTokenService {
@@ -69,5 +70,9 @@ export class AccessTokenService {
         status: 403,
       };
     }
+    const result = await getUserInfoById(session.user_id);
+    return {
+      UserInfo: result,
+    };
   };
 }
