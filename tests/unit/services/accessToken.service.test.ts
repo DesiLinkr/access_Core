@@ -25,9 +25,12 @@ describe("AccessTokenService", () => {
     mockSessionRepo.getSession = jest.fn();
     mockSessionRepo.storeSession = jest.fn();
     mockSessionRepo.updateSessiontoken = jest.fn();
+    mockSessionRepo.getSessionbyId = jest.fn();
     mockTokenUtil.verifyRefreshToken = jest.fn();
     mockTokenUtil.compareTokens = jest.fn();
     mockTokenUtil.genrateAccessToken = jest.fn();
+    mockTokenUtil.extractToken = jest.fn();
+    mockTokenUtil.verifyAccessToken = jest.fn();
     // Inject BOTH mocked dependencies
     accessTokenService = new AccessTokenService(mockSessionRepo, mockTokenUtil);
   });
@@ -72,5 +75,39 @@ describe("AccessTokenService", () => {
       userAgent
     );
     expect(result).toEqual({ access_token: "access_token" });
+  });
+
+  it("should return error 401 Unauthorized if token is missing", async () => {
+    const authHeader = "Bearer ";
+    const ip = "192.168.1.1";
+    const user_agent = "Mozilla/5.0";
+
+    const result = await accessTokenService.getUser(authHeader, ip, user_agent);
+
+    expect(result).toEqual({
+      error: "Unauthorized",
+      status: 401,
+    });
+  });
+
+  it("should return error 403 if session does not match current device or is expired", async () => {
+    const authHeader = "Bearer valid_token";
+    const ip = "192.168.1.1";
+    const user_agent = "Mozilla/5.0";
+    const decode = { session_id: "valid_session_id" };
+
+    // Mock extractToken and verifyAccessToken behaviors
+    mockTokenUtil.extractToken.mockReturnValue("valid_token");
+    mockTokenUtil.verifyAccessToken.mockReturnValue(decode);
+
+    // Mock getSessionById to return an invalid session
+    mockSessionRepo.getSessionbyId.mockResolvedValue(null as any);
+
+    const result = await accessTokenService.getUser(authHeader, ip, user_agent);
+
+    expect(result).toEqual({
+      error: "Session does not match with current device OR expired",
+      status: 403,
+    });
   });
 });

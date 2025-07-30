@@ -45,7 +45,7 @@ export class TokenUtil {
     }
   }
 
-  extractToken = (authHeader: any) => {
+  public extractToken = (authHeader: any) => {
     if (!authHeader || !authHeader.startsWith("Bearer ")) {
       return null;
     }

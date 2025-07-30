@@ -32,6 +32,9 @@ importers:
       express:
         specifier: ^5.1.0
         version: 5.1.0
+      grpc-protos:
+        specifier: github:Harsh-Tagra/grpc-protos
+        version: https://codeload.github.com/Harsh-Tagra/grpc-protos/tar.gz/c345a9aad9800e10fc46ee94518ac04b902d8d09
       ioredis:
         specifier: ^5.6.1
         version: 5.6.1
@@ -87,6 +90,9 @@ importers:
       grpc:
         specifier: ^1.24.11
         version: 1.24.11
+      ts-proto:
+        specifier: ^2.7.5
+        version: 2.7.5
 
 packages:
 
@@ -899,6 +905,10 @@ packages:
   caniuse-lite@1.0.30001727:
     resolution: {integrity: sha512-pB68nIHmbN6L/4C6MH1DokyR3bYqFwjaSs/sWDHGj4CTcFtQUQMuJftVwWkXq7mNWOybD3KhUv3oWHoGxgP14Q==}
 
+  case-anything@2.1.13:
+    resolution: {integrity: sha512-zlOQ80VrQ2Ue+ymH5OuM/DlDq64mEm+B9UTdHULv5osUMD6HalNTblf2b1u/m6QecjsnOkBpqVZ+XPwIVsy7Ng==}
+    engines: {node: '>=12.13'}
+
   chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
@@ -1048,6 +1058,11 @@ packages:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
 
+  detect-libc@1.0.3:
+    resolution: {integrity: sha512-pGjwhsmsp4kL2RTz08wcOlGN83otlqHeD/Z5T8GXZB+/YcpQ/dgo+lbU8ZsGxV0HIvqqxo9l7mqYwyYMD9bKDg==}
+    engines: {node: '>=0.10'}
+    hasBin: true
+
   detect-libc@2.0.4:
     resolution: {integrity: sha512-3UDv+G9CsCKO1WKMGw9fwq/SWJYbI0c5Y7LU1AXYoDdbhE2AHQ6N6Nb34sG8Fj7T5APy8qXDCKuuIHd1BR0tVA==}
     engines: {node: '>=8'}
@@ -1066,6 +1081,9 @@ packages:
   dotenv@17.2.0:
     resolution: {integrity: sha512-Q4sgBT60gzd0BB0lSyYD3xM4YxrXA9y4uBDof1JNYGzOXrQdQ6yX+7XIAqoFOGQFOTK1D3Hts5OllpxMDZFONQ==}
     engines: {node: '>=12'}
+
+  dprint-node@1.0.8:
+    resolution: {integrity: sha512-iVKnUtYfGrYcW1ZAlfR/F59cUVL8QIhWoBJoSjkkdua/dkWIgjZfiLMeTjiB06X0ZLkQ0M2C1VbUj/CxkIf1zg==}
 
   dunder-proto@1.0.1:
     resolution: {integrity: sha512-KIN/nDJBQRcXw0MLVhZE9iQHmG68qAVIBg9CqmUYjmQIhgij9U5MFvrqkUL5FbtyyzZuOeOt0zdeRe4UY7ct+A==}
@@ -1278,6 +1296,10 @@ packages:
 
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
+
+  grpc-protos@https://codeload.github.com/Harsh-Tagra/grpc-protos/tar.gz/c345a9aad9800e10fc46ee94518ac04b902d8d09:
+    resolution: {tarball: https://codeload.github.com/Harsh-Tagra/grpc-protos/tar.gz/c345a9aad9800e10fc46ee94518ac04b902d8d09}
+    version: 1.0.0
 
   grpc@1.24.11:
     resolution: {integrity: sha512-8/AQdFCzCeCDWW3SoaMNp6ccbRvTQEH1O1u1uFtt29eWsg5gSZCJ3m6fbkduEIh3smY7WAPP+LgVJ5n3nZRxcA==}
@@ -2308,6 +2330,16 @@ packages:
         optional: true
       '@swc/wasm':
         optional: true
+
+  ts-poet@6.12.0:
+    resolution: {integrity: sha512-xo+iRNMWqyvXpFTaOAvLPA5QAWO6TZrSUs5s4Odaya3epqofBu/fMLHEWl8jPmjhA0s9sgj9sNvF1BmaQlmQkA==}
+
+  ts-proto-descriptors@2.0.0:
+    resolution: {integrity: sha512-wHcTH3xIv11jxgkX5OyCSFfw27agpInAd6yh89hKG6zqIXnjW9SYqSER2CVQxdPj4czeOhGagNvZBEbJPy7qkw==}
+
+  ts-proto@2.7.5:
+    resolution: {integrity: sha512-FoRxSaNW+P3m+GiXIZjUjhaHXT67Ah4zMGKzn4yklbGRQTS+PqpUhKo5AJnwfUDUByjEUG7ch36byFUYWRH9Nw==}
+    hasBin: true
 
   tsconfig@7.0.0:
     resolution: {integrity: sha512-vZXmzPrL+EmC4T/4rVlT2jNVMWCi/O4DIiSj3UHg1OE5kCKbk4mfrXc6dZksLgRM/TZlKnousKH9bbTazUWRRw==}
@@ -3423,6 +3455,8 @@ snapshots:
 
   caniuse-lite@1.0.30001727: {}
 
+  case-anything@2.1.13: {}
+
   chalk@4.1.2:
     dependencies:
       ansi-styles: 4.3.0
@@ -3535,6 +3569,8 @@ snapshots:
 
   depd@2.0.0: {}
 
+  detect-libc@1.0.3: {}
+
   detect-libc@2.0.4: {}
 
   detect-newline@3.1.0: {}
@@ -3547,6 +3583,10 @@ snapshots:
   diff@4.0.2: {}
 
   dotenv@17.2.0: {}
+
+  dprint-node@1.0.8:
+    dependencies:
+      detect-libc: 1.0.3
 
   dunder-proto@1.0.1:
     dependencies:
@@ -3817,6 +3857,8 @@ snapshots:
   gopd@1.2.0: {}
 
   graceful-fs@4.2.11: {}
+
+  grpc-protos@https://codeload.github.com/Harsh-Tagra/grpc-protos/tar.gz/c345a9aad9800e10fc46ee94518ac04b902d8d09: {}
 
   grpc@1.24.11:
     dependencies:
@@ -4993,6 +5035,21 @@ snapshots:
       typescript: 5.8.3
       v8-compile-cache-lib: 3.0.1
       yn: 3.1.1
+
+  ts-poet@6.12.0:
+    dependencies:
+      dprint-node: 1.0.8
+
+  ts-proto-descriptors@2.0.0:
+    dependencies:
+      '@bufbuild/protobuf': 2.6.1
+
+  ts-proto@2.7.5:
+    dependencies:
+      '@bufbuild/protobuf': 2.6.1
+      case-anything: 2.1.13
+      ts-poet: 6.12.0
+      ts-proto-descriptors: 2.0.0
 
   tsconfig@7.0.0:
     dependencies:
