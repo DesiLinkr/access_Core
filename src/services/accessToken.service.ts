@@ -70,7 +70,7 @@ export class AccessTokenService {
         status: 403,
       };
     }
-    const result = await getUserInfoById(session.user_id);
+    const result = await getUserInfoById({ id: session.user_id });
     return {
       UserInfo: result,
     };

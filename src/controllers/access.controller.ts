@@ -35,7 +35,16 @@ export class AccessTokenController {
         return res.status(400).json({ message: "bad request" });
       }
       const { ip, user_agent } = (req as any).clientInfo;
-      await this.accessTokenservice.getUser(authHeader, ip, user_agent);
+      const result: any = await this.accessTokenservice.getUser(
+        authHeader,
+        ip,
+        user_agent
+      );
+      if ("error" in result) {
+        res.status(result.status).json({ message: result.error });
+        return;
+      }
+      res.status(200).json(result);
     } catch (error) {
       res.status(500).json("Internal server error");
     }
