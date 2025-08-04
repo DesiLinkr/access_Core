@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { AccessTokenController } from "../../../src/controllers/accessToken.controller";
+import { AccessTokenController } from "../../../src/controllers/access.controller";
 import { AccessTokenService } from "../../../src/services/accessToken.service";
 
 describe("AccessToken controller", () => {
@@ -10,6 +10,7 @@ describe("AccessToken controller", () => {
   beforeEach(() => {
     accessTokenServiceMock = {
       generateFromRefresh: jest.fn(),
+      getUser: jest.fn(),
     } as unknown as jest.Mocked<AccessTokenService>;
 
     controller = new AccessTokenController(accessTokenServiceMock);
@@ -102,5 +103,74 @@ describe("AccessToken controller", () => {
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(mockResult);
+  });
+  it("should return 400 if clientInfo is missing", async () => {
+    const req = {
+      headers: { authorization: "Bearer token123" },
+    } as Partial<Request> as Request;
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    await controller.getUserInfo(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ message: "bad request" });
+  });
+
+  it("should handle errors and return 500", async () => {
+    const req = {
+      headers: { authorization: "Bearer token123" },
+      clientInfo: {
+        ip: "127.0.0.1",
+        user_agent: "Mozilla/5.0",
+      },
+    } as Partial<Request> as Request;
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    await controller.getUserInfo(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith("Internal server error");
+  });
+
+  it("should call getUser and return 200 with user info", async () => {
+    const req = {
+      headers: { authorization: "Bearer token123" },
+      clientInfo: {
+        ip: "127.0.0.1",
+        user_agent: "Mozilla/5.0",
+      },
+    } as Partial<Request> as Request;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    const mockUserData = {
+      id: "user123",
+      name: "Harsh",
+      email: "harsh@example.com",
+    };
+
+    // 🧪 Mock service to resolve with user data
+    accessTokenServiceMock.getUser.mockResolvedValue(mockUserData as any);
+
+    await controller.getUserInfo(req, res);
+
+    // ✅ Make sure the service was called with correct params
+    expect(accessTokenServiceMock.getUser).toHaveBeenCalledWith(
+      "Bearer token123",
+      "127.0.0.1",
+      "Mozilla/5.0"
+    );
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(mockUserData);
   });
 });

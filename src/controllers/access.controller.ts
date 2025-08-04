@@ -28,4 +28,25 @@ export class AccessTokenController {
       res.status(500).json("Internal server error");
     }
   };
+  public getUserInfo = async (req: Request, res: Response) => {
+    try {
+      const authHeader = req.headers["authorization"];
+      if (!(req as any).clientInfo) {
+        return res.status(400).json({ message: "bad request" });
+      }
+      const { ip, user_agent } = (req as any).clientInfo;
+      const result: any = await this.accessTokenservice.getUser(
+        authHeader,
+        ip,
+        user_agent
+      );
+      if ("error" in result) {
+        res.status(result.status).json({ message: result.error });
+        return;
+      }
+      res.status(200).json(result);
+    } catch (error) {
+      res.status(500).json("Internal server error");
+    }
+  };
 }

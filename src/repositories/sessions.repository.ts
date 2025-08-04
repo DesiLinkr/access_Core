@@ -33,7 +33,7 @@ export class SessionsRepository {
 
   public updateSessiontoken = async (newEncryptedtoken: string, id: string) => {
     return await this.database.query(
-      `UPDATE SET refeshtoken = $1 WHERE  user_id =$2`,
+      `UPDATE sessions SET refeshtoken = $1 WHERE  id = $2`,
       [newEncryptedtoken, id]
     );
   };
@@ -43,5 +43,13 @@ export class SessionsRepository {
       `DELETE FROM sessions WHERE id= $1 AND expires_at=$2`,
       [user_id, new Date(Date.now() - 7 * 86400000).getTime()]
     );
+  };
+
+  public getSessionbyId = async (sessionId: string) => {
+    const result = await this.database.query(
+      "SELECT * From sessions WHERE id=$1",
+      [sessionId]
+    );
+    return result.rows[0] || null;
   };
 }

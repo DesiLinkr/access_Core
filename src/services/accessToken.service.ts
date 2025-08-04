@@ -1,4 +1,5 @@
 import { SessionsRepository } from "../repositories/sessions.repository";
+import { getUserInfoById } from "../utils/grpc.util";
 import { TokenUtil } from "../utils/token.util";
 
 export class AccessTokenService {
@@ -32,13 +33,6 @@ export class AccessTokenService {
         status: 403,
       };
     }
-
-    if (!db) {
-      return {
-        error: "Session does not match with current device OR expired",
-        status: 403,
-      };
-    }
     const isMatched = this.tokenUtil.compareTokens(
       db.refeshtoken,
       refresh_token
@@ -52,8 +46,33 @@ export class AccessTokenService {
     }
     const access_token = this.tokenUtil.genrateAccessToken(
       decode.user_id,
-      decode.id
+      db.id
     );
     return { access_token };
+  };
+
+  getUser = async (authHeader: any, ip: string, user_agent: string) => {
+    const token = this.tokenUtil.extractToken(authHeader);
+
+    if (!token) {
+      return {
+        error: "Unauthorized",
+        status: 401,
+      };
+    }
+    const decode: any = this.tokenUtil.verifyAccessToken(token);
+    const session: any = await this.SessionRepo.getSessionbyId(
+      decode.session_id
+    );
+    if (!session || session.ip !== ip || session.user_agent != user_agent) {
+      return {
+        error: "Session does not match with current device OR expired",
+        status: 403,
+      };
+    }
+    const result = await getUserInfoById({ id: session.user_id });
+    return {
+      UserInfo: result,
+    };
   };
 }
