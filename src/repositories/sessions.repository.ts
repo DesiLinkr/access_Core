@@ -33,7 +33,7 @@ export class SessionsRepository {
 
   public updateSessiontoken = async (newEncryptedtoken: string, id: string) => {
     return await this.database.query(
-      `UPDATE SET refeshtoken = $1 WHERE  user_id =$2`,
+      `UPDATE sessions SET refeshtoken = $1 WHERE  id = $2`,
       [newEncryptedtoken, id]
     );
   };
@@ -46,9 +46,10 @@ export class SessionsRepository {
   };
 
   public getSessionbyId = async (sessionId: string) => {
-    return await this.database.query(
-      "SELECT * From sessions from WHERE id=$1",
+    const result = await this.database.query(
+      "SELECT * From sessions WHERE id=$1",
       [sessionId]
     );
+    return result.rows[0] || null;
   };
 }
