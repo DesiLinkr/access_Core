@@ -46,7 +46,7 @@ export class AccessTokenService {
     }
     const access_token = this.tokenUtil.genrateAccessToken(
       decode.user_id,
-      decode.id
+      db.id
     );
     return { access_token };
   };

@@ -4,12 +4,12 @@ const app = new App().getInstance();
 
 import { AccessTokenService } from "../../../src/services/accessToken.service";
 import { TokenUtil } from "../../../src/utils/token.util";
-
+let validAccessToken: string;
 describe("GET /api/access/token/refresh", () => {
   const accessTokenService = new AccessTokenService();
   const token = new TokenUtil();
   const refresh_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmEyZGE0MDYtNTE4YS00NjY3LThiZDgtZTE0NmI5YmQxMTU4IiwiaWF0IjoxNzUzMjU1OTU4fQ.3_eGmQeq65LUHO4N-REQgAbBNvPIntNgy-9FJuk0hto";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGNjZjYwODAtZjgzMy00MTdmLThlYzktMWYzYTA5MGQ1NjlkIiwiaWF0IjoxNzU0MzA1NzY3LCJleHAiOjE3NTQ5MTA1Njd9.5LJ41G6JMM2apQbdNoJ82r6wT_dtxmjXk60jg2Ontxk";
 
   it("should return 500 if unexpected error occurs during verification", async () => {
     jest
@@ -72,6 +72,8 @@ describe("GET /api/access/token/refresh", () => {
       .set("Cookie", [`refresh_token=${refresh_token}`]); // <-- wrapped in quotes
 
     expect(res.status).toBe(200);
+
+    validAccessToken = res.body.access_token;
   });
 
   it("should return 401 if token does not match stored encrypted token", async () => {
@@ -81,12 +83,39 @@ describe("GET /api/access/token/refresh", () => {
       .set("x-forwarded-for", "127.0.0.1")
       .set("Cookie", [
         `refresh_token=${token.genrateRefeshToken(
-          "fa2da406-518a-4667-8bd8-e146b9bd1158"
+          "0ccf6080-f833-417f-8ec9-1f3a090d569d"
         )}`,
       ]);
     expect(res.status).toBe(401);
     expect(res.body).toEqual({
       message: "Invalid session",
     });
+  });
+});
+
+describe("GET /api/access/me ", () => {
+  it("should return user info for valid token/session", async () => {
+    const res = await request(app)
+      .get("/api/access/me")
+      .set("Authorization", `Bearer ${validAccessToken}`)
+      .set("User-Agent", "integration-test")
+      .set("X-Forwarded-For", "127.0.0.1");
+
+    expect(res.statusCode).toBe(200);
+  });
+
+  it("should return 401 when no token is provided", async () => {
+    const res = await request(app).get("/api/access/me");
+    expect(res.statusCode).toBe(401);
+  });
+
+  it("should return 403 for invalid session IP/user-agent", async () => {
+    const res = await request(app)
+      .get("/api/access/me")
+      .set("Authorization", `Bearer ${validAccessToken}`)
+      .set("User-Agent", "FakeAgent/1.0")
+      .set("X-Forwarded-For", "1.2.3.4");
+
+    expect(res.statusCode).toBe(403);
   });
 });
