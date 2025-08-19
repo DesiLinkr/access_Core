@@ -2,11 +2,11 @@ import request from "supertest";
 import App from "../../../src/app";
 const app = new App().getInstance();
 
-import { AccessTokenService } from "../../../src/services/accessToken.service";
+import { AccessService } from "../../../src/services/access.service";
 import { TokenUtil } from "../../../src/utils/token.util";
 let validAccessToken: string;
 describe("GET /api/access/token/refresh", () => {
-  const accessTokenService = new AccessTokenService();
+  const accessTokenService = new AccessService();
   const token = new TokenUtil();
   const refresh_token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGNjZjYwODAtZjgzMy00MTdmLThlYzktMWYzYTA5MGQ1NjlkIiwiaWF0IjoxNzU0MzA1NzY3LCJleHAiOjE3NTQ5MTA1Njd9.5LJ41G6JMM2apQbdNoJ82r6wT_dtxmjXk60jg2Ontxk";
