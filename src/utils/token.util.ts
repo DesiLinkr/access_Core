@@ -33,8 +33,20 @@ export class TokenUtil {
       }
     );
   };
+  public generateDeviceId(
+    ip: string,
+    userAgent: string,
+    sessionId: string
+  ): string {
+    const rawData = `${ip}:${userAgent}:${sessionId}`;
+    return crypto.createHash("sha256").update(rawData).digest("hex");
+  }
   public verifyAccessToken = (token: string) => {
-    return this.jwt.verify(token, `${process.env.AccessToken}`);
+    try {
+      return this.jwt.verify(token, `${process.env.AccessToken}`);
+    } catch (err) {
+      return null;
+    }
   };
 
   public verifyRefreshToken(token: string): any {

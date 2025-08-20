@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { AccessTokenService } from "../services/accessToken.service";
+import { AccessService } from "../services/access.service";
 
-export class AccessTokenController {
+export class AccessController {
   private readonly accessTokenservice;
-  constructor(accessTokenservice?: AccessTokenService) {
-    this.accessTokenservice = accessTokenservice ?? new AccessTokenService();
+  constructor(accessTokenservice?: AccessService) {
+    this.accessTokenservice = accessTokenservice ?? new AccessService();
   }
   public issueAccessToken = async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refresh_token;
@@ -30,15 +30,8 @@ export class AccessTokenController {
   };
   public getUserInfo = async (req: Request, res: Response) => {
     try {
-      const authHeader = req.headers["authorization"];
-      if (!(req as any).clientInfo) {
-        return res.status(400).json({ message: "bad request" });
-      }
-      const { ip, user_agent } = (req as any).clientInfo;
       const result: any = await this.accessTokenservice.getUser(
-        authHeader,
-        ip,
-        user_agent
+        (req as any).userId
       );
       if ("error" in result) {
         res.status(result.status).json({ message: result.error });

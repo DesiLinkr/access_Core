@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { requestMeta } from "../middlewares/requestMeta";
 
-import { AccessTokenController } from "../controllers/access.controller";
+import { AccessController } from "../controllers/access.controller";
+import { verifyAccessToken } from "../middlewares/auth.middleware";
 
-const accessTokencontroller = new AccessTokenController();
+const accessTokencontroller = new AccessController();
 const acesssRouter = Router();
 
 acesssRouter.get(
@@ -11,6 +12,6 @@ acesssRouter.get(
   requestMeta,
   accessTokencontroller.issueAccessToken
 );
-acesssRouter.get("/me", requestMeta, accessTokencontroller.getUserInfo);
+acesssRouter.get("/me", verifyAccessToken, accessTokencontroller.getUserInfo);
 
 export default acesssRouter;

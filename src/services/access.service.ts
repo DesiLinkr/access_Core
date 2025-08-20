@@ -1,13 +1,16 @@
+import { deviceId } from "../cache/deviceId.cache";
 import { SessionsRepository } from "../repositories/sessions.repository";
 import { getUserInfoById } from "../utils/grpc.util";
 import { TokenUtil } from "../utils/token.util";
 
-export class AccessTokenService {
+export class AccessService {
   private readonly tokenUtil;
   private readonly SessionRepo;
+  private readonly Cache;
   constructor(SessionRepo?: SessionsRepository, tokenUtil?: TokenUtil) {
     this.SessionRepo = SessionRepo ?? new SessionsRepository();
     this.tokenUtil = tokenUtil ?? new TokenUtil();
+    this.Cache = new deviceId();
   }
   public generateFromRefresh = async (
     refresh_token: string,
@@ -44,6 +47,14 @@ export class AccessTokenService {
         status: 401,
       };
     }
+    const deviceidexist = await this.Cache.getDeviceid(db.id);
+
+    if (!deviceidexist) {
+      const device_id = this.tokenUtil.generateDeviceId(ip, user_agent, db.id);
+
+      await this.Cache.storeDeviceid(db.id, device_id);
+    }
+
     const access_token = this.tokenUtil.genrateAccessToken(
       decode.user_id,
       db.id
@@ -51,28 +62,12 @@ export class AccessTokenService {
     return { access_token };
   };
 
-  getUser = async (authHeader: any, ip: string, user_agent: string) => {
-    const token = this.tokenUtil.extractToken(authHeader);
-
-    if (!token) {
-      return {
-        error: "Unauthorized",
-        status: 401,
-      };
-    }
-    const decode: any = this.tokenUtil.verifyAccessToken(token);
-    const session: any = await this.SessionRepo.getSessionbyId(
-      decode.session_id
-    );
-    if (!session || session.ip !== ip || session.user_agent != user_agent) {
-      return {
-        error: "Session does not match with current device OR expired",
-        status: 403,
-      };
-    }
-    const result = await getUserInfoById({ id: session.user_id });
+  getUser = async (id: string) => {
+    const result = await getUserInfoById({ id });
     return {
       UserInfo: result,
     };
   };
+
+  getHistory = async (id: string) => {};
 }
