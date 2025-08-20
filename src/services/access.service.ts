@@ -30,6 +30,7 @@ export class AccessService {
       ip,
       user_agent
     );
+
     if (!db) {
       return {
         error: "Session does not match with current device OR expired",

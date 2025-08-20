@@ -9,7 +9,7 @@ describe("GET /api/access/token/refresh", () => {
   const accessTokenService = new AccessService();
   const token = new TokenUtil();
   const refresh_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMGNjZjYwODAtZjgzMy00MTdmLThlYzktMWYzYTA5MGQ1NjlkIiwiaWF0IjoxNzU0MzA1NzY3LCJleHAiOjE3NTQ5MTA1Njd9.5LJ41G6JMM2apQbdNoJ82r6wT_dtxmjXk60jg2Ontxk";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiN2Y3ZjVhNDktYTlkOC00ZDgyLWE3MDMtZjk1OGNkZDhjODY4IiwiaWF0IjoxNzU1Njg4OTkwLCJleHAiOjE3NTYyOTM3OTB9.GtIY2Webo3FC0t4rON0iSz9-kxYhjcbrVkIEYWmYIx0";
 
   it("should return 500 if unexpected error occurs during verification", async () => {
     jest
@@ -83,7 +83,7 @@ describe("GET /api/access/token/refresh", () => {
       .set("x-forwarded-for", "127.0.0.1")
       .set("Cookie", [
         `refresh_token=${token.genrateRefeshToken(
-          "0ccf6080-f833-417f-8ec9-1f3a090d569d"
+          "7f7f5a49-a9d8-4d82-a703-f958cdd8c868"
         )}`,
       ]);
     expect(res.status).toBe(401);

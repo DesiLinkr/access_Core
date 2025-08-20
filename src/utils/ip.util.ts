@@ -6,6 +6,7 @@
  */
 export function getClientIp(req: any): string {
   const xForwardedFor = req.headers["x-forwarded-for"];
+
   let ip = "";
 
   if (xForwardedFor) {

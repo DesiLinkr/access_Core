@@ -32,8 +32,16 @@ export const verifyAccessToken = async (
   const cache = new deviceId();
 
   const device_id = await cache.getDeviceid(decode.session_id);
+  const currentdevice = tokenUtil.generateDeviceId(
+    ip,
+    user_agent,
+    decode.session_id
+  );
 
-  if (!device_id) tokenUtil.generateDeviceId(ip, user_agent, decode.session_id);
-
+  if (device_id != currentdevice) {
+    return res.status(403).json({
+      error: "Session does not match with current device OR expired",
+    });
+  }
   next();
 };

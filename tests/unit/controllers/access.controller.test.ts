@@ -1,6 +1,14 @@
 import { Request, Response } from "express";
 import { AccessController } from "../../../src/controllers/access.controller";
 import { AccessService } from "../../../src/services/access.service";
+jest.mock("../../../src/redis/client", () => ({
+  redisClient: {
+    set: jest.fn(),
+    get: jest.fn(),
+    del: jest.fn(),
+    on: jest.fn(),
+  },
+}));
 
 describe("AccessToken controller", () => {
   let controller: AccessController;
