@@ -36,14 +36,17 @@ export class TokenUtil {
   public generateDeviceId(
     ip: string,
     userAgent: string,
-    token: string
+    sessionId: string
   ): string {
-    const tokenHash = crypto.createHash("sha256").update(token).digest("hex");
-    const rawData = `${ip}:${userAgent}:${tokenHash}`;
+    const rawData = `${ip}:${userAgent}:${sessionId}`;
     return crypto.createHash("sha256").update(rawData).digest("hex");
   }
   public verifyAccessToken = (token: string) => {
-    return this.jwt.verify(token, `${process.env.AccessToken}`);
+    try {
+      return this.jwt.verify(token, `${process.env.AccessToken}`);
+    } catch (err) {
+      return null;
+    }
   };
 
   public verifyRefreshToken(token: string): any {

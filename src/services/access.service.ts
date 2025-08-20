@@ -1,3 +1,4 @@
+import { deviceId } from "../cache/deviceId.cache";
 import { SessionsRepository } from "../repositories/sessions.repository";
 import { getUserInfoById } from "../utils/grpc.util";
 import { TokenUtil } from "../utils/token.util";
@@ -5,9 +6,11 @@ import { TokenUtil } from "../utils/token.util";
 export class AccessService {
   private readonly tokenUtil;
   private readonly SessionRepo;
+  private readonly Cache;
   constructor(SessionRepo?: SessionsRepository, tokenUtil?: TokenUtil) {
     this.SessionRepo = SessionRepo ?? new SessionsRepository();
     this.tokenUtil = tokenUtil ?? new TokenUtil();
+    this.Cache = new deviceId();
   }
   public generateFromRefresh = async (
     refresh_token: string,
@@ -44,6 +47,14 @@ export class AccessService {
         status: 401,
       };
     }
+    const deviceidexist = await this.Cache.getDeviceid(db.id);
+
+    if (!deviceidexist) {
+      const device_id = this.tokenUtil.generateDeviceId(ip, user_agent, db.id);
+
+      await this.Cache.storeDeviceid(db.id, device_id);
+    }
+
     const access_token = this.tokenUtil.genrateAccessToken(
       decode.user_id,
       db.id
