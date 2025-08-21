@@ -70,5 +70,8 @@ export class AccessService {
     };
   };
 
-  getHistory = async (id: string) => {};
+  getHistory = async (id: string) => {
+    const result = await this.SessionRepo.getAllSessionbyId(id);
+    return result;
+  };
 }
