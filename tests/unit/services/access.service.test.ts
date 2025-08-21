@@ -3,6 +3,16 @@ import { SessionsRepository } from "../../../src/repositories/sessions.repositor
 import { AccessService } from "../../../src/services/access.service";
 import { SessionService } from "../../../src/services/session.service";
 import { TokenUtil } from "../../../src/utils/token.util";
+
+jest.mock("../../../src/redis/client", () => ({
+  redisClient: {
+    set: jest.fn(),
+    get: jest.fn(),
+    del: jest.fn(),
+    on: jest.fn(),
+  },
+}));
+
 jest.mock("../../../src/utils/grpc.util", () => ({
   getUserInfoById: jest.fn(),
 }));
