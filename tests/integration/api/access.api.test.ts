@@ -5,18 +5,16 @@ const app = new App().getInstance();
 import { AccessService } from "../../../src/services/access.service";
 import { TokenUtil } from "../../../src/utils/token.util";
 let validAccessToken: string;
+const accessService = new AccessService();
 describe("GET /api/access/token/refresh", () => {
-  const accessTokenService = new AccessService();
   const token = new TokenUtil();
   const refresh_token =
     "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiN2Y3ZjVhNDktYTlkOC00ZDgyLWE3MDMtZjk1OGNkZDhjODY4IiwiaWF0IjoxNzU1Njg4OTkwLCJleHAiOjE3NTYyOTM3OTB9.GtIY2Webo3FC0t4rON0iSz9-kxYhjcbrVkIEYWmYIx0";
 
   it("should return 500 if unexpected error occurs during verification", async () => {
-    jest
-      .spyOn(accessTokenService, "generateFromRefresh")
-      .mockImplementation(() => {
-        throw new Error("Unexpected DB failure");
-      });
+    jest.spyOn(accessService, "generateFromRefresh").mockImplementation(() => {
+      throw new Error("Unexpected DB failure");
+    });
 
     const res = await request(app)
       .get("/api/access/token/refresh")
@@ -112,6 +110,34 @@ describe("GET /api/access/me ", () => {
   it("should return 403 for invalid session IP/user-agent", async () => {
     const res = await request(app)
       .get("/api/access/me")
+      .set("Authorization", `Bearer ${validAccessToken}`)
+      .set("User-Agent", "FakeAgent/1.0")
+      .set("X-Forwarded-For", "1.2.3.4");
+
+    expect(res.statusCode).toBe(403);
+  });
+});
+
+describe("GET /api/access/history", () => {
+  it("should return history for valid token/session", async () => {
+    const res = await request(app)
+      .get("/api/access/history")
+      .set("Authorization", `Bearer ${validAccessToken}`)
+      .set("User-Agent", "integration-test")
+      .set("X-Forwarded-For", "127.0.0.1");
+
+    expect(res.statusCode).toBe(200);
+  });
+  it("should return 401 for invalid token", async () => {
+    const res = await request(app)
+      .get("/api/access/history")
+      .set("Authorization", "Bearer invalidtoken");
+
+    expect(res.status).toBe(401);
+  });
+  it("should return 403 for invalid session IP/user-agent", async () => {
+    const res = await request(app)
+      .get("/api/access/history")
       .set("Authorization", `Bearer ${validAccessToken}`)
       .set("User-Agent", "FakeAgent/1.0")
       .set("X-Forwarded-For", "1.2.3.4");

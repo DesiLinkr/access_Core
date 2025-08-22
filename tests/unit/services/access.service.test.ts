@@ -3,6 +3,11 @@ import { SessionsRepository } from "../../../src/repositories/sessions.repositor
 import { AccessService } from "../../../src/services/access.service";
 import { SessionService } from "../../../src/services/session.service";
 import { TokenUtil } from "../../../src/utils/token.util";
+import pool from "../../../src/db/client";
+beforeEach(() => {
+  jest.clearAllMocks();
+});
+jest.mock("../../../src/db/client");
 
 jest.mock("../../../src/redis/client", () => ({
   redisClient: {
@@ -84,5 +89,39 @@ describe("AccessTokenService", () => {
     expect(result).toEqual({
       UserInfo: mockUser,
     });
+  });
+
+  it("should return empty array when no sessions exist", async () => {
+    (pool.query as jest.Mock).mockResolvedValueOnce({ rows: [] });
+
+    const result = await accessTokenService.getHistory("user-123");
+    expect(result).toEqual([]);
+  });
+
+  it("should return sessions when available", async () => {
+    const mockRows = [
+      {
+        ip: "127.0.0.1",
+        user_agent: "jest-agent",
+        issuedAt: "2025-08-21T12:00:00Z",
+        expiresAt: "2025-08-28T12:00:00Z",
+      },
+    ];
+    (pool.query as jest.Mock).mockResolvedValueOnce({ rows: mockRows });
+
+    const result = await accessTokenService.getHistory("user-456");
+
+    expect(result).toEqual(mockRows);
+    expect(result[0]).toHaveProperty("ip", "127.0.0.1");
+    expect(result[0]).toHaveProperty("user_agent", "jest-agent");
+    expect(pool.query).toHaveBeenCalledTimes(1);
+  });
+
+  it("should throw error if DB query fails", async () => {
+    (pool.query as jest.Mock).mockRejectedValueOnce(new Error("DB error"));
+
+    await expect(accessTokenService.getHistory("user-789")).rejects.toThrow(
+      "DB error"
+    );
   });
 });

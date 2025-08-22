@@ -19,6 +19,7 @@ describe("AccessToken controller", () => {
     accessTokenServiceMock = {
       generateFromRefresh: jest.fn(),
       getUser: jest.fn(),
+      getHistory: jest.fn(),
     } as unknown as jest.Mocked<AccessService>;
 
     controller = new AccessController(accessTokenServiceMock);
@@ -155,5 +156,68 @@ describe("AccessToken controller", () => {
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(mockUserData);
+  });
+
+  it("should return 200 with sessions if found", async () => {
+    const mockSessions = [
+      {
+        ip: "127.0.0.1",
+        user_agent: "jest-agent",
+        issuedAt: "2025-08-21T12:00:00Z",
+        expiresAt: "2025-08-28T12:00:00Z",
+      },
+    ];
+
+    const req = {
+      headers: { authorization: "Bearer token123" },
+    } as Partial<Request> as Request;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    accessTokenServiceMock.getHistory.mockResolvedValue(mockSessions);
+
+    await controller.acesssHistory(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith(mockSessions);
+  });
+
+  it("should return empty array if no sessions", async () => {
+    const req = {
+      headers: { authorization: "Bearer token123" },
+    } as Partial<Request> as Request;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    accessTokenServiceMock.getHistory.mockResolvedValue([]);
+
+    await controller.acesssHistory(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith([]);
+  });
+
+  it("should return 500 if service throws error", async () => {
+    const req = {
+      headers: { authorization: "Bearer token123" },
+    } as Partial<Request> as Request;
+
+    const res = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    } as unknown as Response;
+
+    accessTokenServiceMock.getHistory.mockRejectedValue(new Error("DB error"));
+
+    await controller.acesssHistory(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith("Internal server error");
   });
 });

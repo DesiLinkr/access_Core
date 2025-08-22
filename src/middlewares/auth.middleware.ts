@@ -12,14 +12,14 @@ export const verifyAccessToken = async (
   const ip = getClientIp(req);
   const user_agent = req.headers["user-agent"];
 
+  if (!token) {
+    return res.status(401).json({ message: "Access token missing" });
+  }
+
   if (!ip || !user_agent) {
     return res.status(401).json({
       error: "Missing IP address or User-Agent in request",
     });
-  }
-
-  if (!token) {
-    return res.status(401).json({ message: "Access token missing" });
   }
 
   const tokenUtil = new TokenUtil();
