@@ -19,6 +19,14 @@ export class SessionsRepository {
     );
   };
 
+  public getAllSessionbyId = async (user_id: string) => {
+    const result = await this.database.query(
+      `SELECT ip,user_agent,created_at AS login_time,expires_at  FROM sessions WHERE user_id = $1 `,
+      [user_id]
+    );
+    return result.rows || null;
+  };
+
   public getSession = async (
     user_id: string,
     ip: string,
