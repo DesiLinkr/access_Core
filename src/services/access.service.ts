@@ -25,6 +25,7 @@ export class AccessService {
         status: 400,
       };
     }
+
     const db = await this.SessionRepo.getSession(
       decode.user_id,
       ip,
@@ -64,7 +65,8 @@ export class AccessService {
   };
 
   getUser = async (id: string) => {
-    const result = await getUserInfoById({ id });
+    const result = await getUserInfoById({ userId: id });
+
     return {
       UserInfo: result,
     };
