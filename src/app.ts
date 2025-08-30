@@ -2,6 +2,8 @@ import express, { Application } from "express";
 import routes from "./routes/index.routes";
 import "dotenv/config";
 import cookieParser from "cookie-parser";
+import { createGrpcServer } from "./grpc/server";
+import * as grpc from "@grpc/grpc-js";
 class App {
   private express: Application;
   private PORT: number;
@@ -33,11 +35,24 @@ class App {
     return this.express;
   };
 
-  public startServer = (port: number) => {
+  public startServers = async (port: number) => {
     this.express.listen(this.PORT, () => {
       this.PORT = Number(process.env.PORT) || port;
       console.log(`Server running at http://localhost:${this.PORT}`);
     });
+
+    const grpcServer = await createGrpcServer();
+    grpcServer.bindAsync(
+      `0.0.0.0:5052`,
+      grpc.ServerCredentials.createInsecure(),
+      (err, port) => {
+        if (err) {
+          console.error(`Server could not start. Error: ${err}`);
+          return;
+        }
+        console.log(`Server is running on port ${port}`);
+      }
+    );
   };
 }
 

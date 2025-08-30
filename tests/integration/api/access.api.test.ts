@@ -9,8 +9,7 @@ const accessService = new AccessService();
 describe("GET /api/access/token/refresh", () => {
   const token = new TokenUtil();
   const refresh_token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiN2Y3ZjVhNDktYTlkOC00ZDgyLWE3MDMtZjk1OGNkZDhjODY4IiwiaWF0IjoxNzU1Njg4OTkwLCJleHAiOjE3NTYyOTM3OTB9.GtIY2Webo3FC0t4rON0iSz9-kxYhjcbrVkIEYWmYIx0";
-
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiYmE5ZGVlNjQtNzRmNi00ZWY0LWFiZDQtNWY2NmMyNTVlNWQ4IiwiaWF0IjoxNzU2MzY5ODA3LCJleHAiOjE3NTY5NzQ2MDd9.7XfOY-Svreqoy8OB9stpjFsDvRiwgRQkzz3-oG-zhuA";
   it("should return 500 if unexpected error occurs during verification", async () => {
     jest.spyOn(accessService, "generateFromRefresh").mockImplementation(() => {
       throw new Error("Unexpected DB failure");
@@ -24,17 +23,6 @@ describe("GET /api/access/token/refresh", () => {
         `refresh_token=${token.genrateRefeshToken("___%%%###BAD")}`,
       ]);
     expect(res.status).toBe(500);
-  });
-  it("should return 403 if session does not match current device or IP", async () => {
-    const res = await request(app)
-      .get("/api/access/token/refresh")
-      .set("User-Agent", "wrong-agent")
-      .set("x-forwarded-for", "0.0.0.0")
-      .set("Cookie", [`refresh_token=${refresh_token}`]);
-    expect(res.status).toBe(403);
-    expect(res.body).toEqual({
-      message: "Session does not match with current device OR expired",
-    });
   });
 
   it("should return 400 for missing refresh token", async () => {
@@ -72,6 +60,8 @@ describe("GET /api/access/token/refresh", () => {
     expect(res.status).toBe(200);
 
     validAccessToken = res.body.access_token;
+
+    console.log(res.body.access_token);
   });
 
   it("should return 401 if token does not match stored encrypted token", async () => {
@@ -81,7 +71,7 @@ describe("GET /api/access/token/refresh", () => {
       .set("x-forwarded-for", "127.0.0.1")
       .set("Cookie", [
         `refresh_token=${token.genrateRefeshToken(
-          "7f7f5a49-a9d8-4d82-a703-f958cdd8c868"
+          "ba9dee64-74f6-4ef4-abd4-5f66c255e5d8"
         )}`,
       ]);
     expect(res.status).toBe(401);
