@@ -12,6 +12,7 @@ acesssRouter.get(
   requestMeta,
   accessController.issueAccessToken
 );
+
 acesssRouter.get("/me", verifyAccessToken, accessController.getUserInfo);
 acesssRouter.get("/history", verifyAccessToken, accessController.acesssHistory);
 export default acesssRouter;

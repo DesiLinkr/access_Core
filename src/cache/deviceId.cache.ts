@@ -24,4 +24,8 @@ export class deviceId {
   public getDeviceid = async (sessionID: string) => {
     return this.redisClient.get(`${this.prefix}:${sessionID}`);
   };
+
+  public delAllDeviceid = async (sessionID: string) => {
+    return this.redisClient.del(`${this.prefix}:${sessionID}`);
+  };
 }

@@ -1,21 +1,22 @@
 import { Server, ServerCredentials, ChannelCredentials } from "@grpc/grpc-js";
 import {
-  SessionServiceClient,
+  AccessServiceClient,
   CreateSessionRequest,
-} from "../../../src/grpc/generated/session";
+  delsessionsRequest,
+} from "../../../src/grpc/generated/access";
 import { createGrpcServer } from "../../../src/grpc/server";
 import { v4 as uuidv4 } from "uuid";
 
-const GRPC_PORT = 50051;
+const GRPC_PORT = 5052;
 const GRPC_ADDR = `localhost:${GRPC_PORT}`;
 
 let server: Server;
 
-describe("gRPC SessionService integration", () => {
-  let client: SessionServiceClient;
+describe("gRPC SessionService Integration", () => {
+  let client: AccessServiceClient;
 
   beforeAll(async () => {
-    // Start the gRPC server
+    // Start gRPC server
     server = await createGrpcServer();
     await new Promise<void>((resolve, reject) => {
       server.bindAsync(
@@ -28,7 +29,9 @@ describe("gRPC SessionService integration", () => {
         }
       );
     });
-    client = new SessionServiceClient(
+
+    // Create client
+    client = new AccessServiceClient(
       GRPC_ADDR,
       ChannelCredentials.createInsecure()
     );
@@ -42,12 +45,14 @@ describe("gRPC SessionService integration", () => {
 
   it("should create a session and return a refresh token", (done) => {
     const request: CreateSessionRequest = {
-      userId: uuidv4(), // <-- Use a valid UUID
+      userId: uuidv4(),
       ip: "127.0.0.1",
       userAgent: "integration-test",
     };
 
     client.createSession(request, (err, response) => {
+      console.log(err);
+
       expect(err).toBeNull();
       expect(response).toBeDefined();
       expect(response?.refreshToken).toBeDefined();
@@ -55,5 +60,16 @@ describe("gRPC SessionService integration", () => {
     });
   });
 
-  // Add more integration tests for other methods as needed
+  it("should delete all sessions for a given user and return success message", (done) => {
+    const request: delsessionsRequest = {
+      userId: uuidv4(),
+    };
+
+    client.delAllsessions(request, (err, response) => {
+      expect(err).toBeNull();
+      expect(response).toBeDefined();
+      expect(response?.msg).toBe("success");
+      done();
+    });
+  });
 });

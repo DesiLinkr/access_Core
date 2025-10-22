@@ -21,6 +21,14 @@ import {
 
 export const protobufPackage = "access";
 
+export interface delsessionsRequest {
+  userId: string;
+}
+
+export interface delsessionsResponse {
+  msg: string;
+}
+
 /** Request message */
 export interface AccessVerifierRequest {
   /** The access token (JWT) */
@@ -44,6 +52,132 @@ export interface AccessVerifierResponse {
   /** HTTP-like status code (200, 401, 403, etc.) */
   status: number;
 }
+
+export interface CreateSessionRequest {
+  userId: string;
+  ip: string;
+  userAgent: string;
+}
+
+export interface CreateSessionResponse {
+  refreshToken: string;
+}
+
+function createBasedelsessionsRequest(): delsessionsRequest {
+  return { userId: "" };
+}
+
+export const delsessionsRequest: MessageFns<delsessionsRequest> = {
+  encode(message: delsessionsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): delsessionsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasedelsessionsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): delsessionsRequest {
+    return { userId: isSet(object.userId) ? globalThis.String(object.userId) : "" };
+  },
+
+  toJSON(message: delsessionsRequest): unknown {
+    const obj: any = {};
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<delsessionsRequest>, I>>(base?: I): delsessionsRequest {
+    return delsessionsRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<delsessionsRequest>, I>>(object: I): delsessionsRequest {
+    const message = createBasedelsessionsRequest();
+    message.userId = object.userId ?? "";
+    return message;
+  },
+};
+
+function createBasedelsessionsResponse(): delsessionsResponse {
+  return { msg: "" };
+}
+
+export const delsessionsResponse: MessageFns<delsessionsResponse> = {
+  encode(message: delsessionsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.msg !== "") {
+      writer.uint32(10).string(message.msg);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): delsessionsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBasedelsessionsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.msg = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): delsessionsResponse {
+    return { msg: isSet(object.msg) ? globalThis.String(object.msg) : "" };
+  },
+
+  toJSON(message: delsessionsResponse): unknown {
+    const obj: any = {};
+    if (message.msg !== "") {
+      obj.msg = message.msg;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<delsessionsResponse>, I>>(base?: I): delsessionsResponse {
+    return delsessionsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<delsessionsResponse>, I>>(object: I): delsessionsResponse {
+    const message = createBasedelsessionsResponse();
+    message.msg = object.msg ?? "";
+    return message;
+  },
+};
 
 function createBaseAccessVerifierRequest(): AccessVerifierRequest {
   return { token: "", ip: "", userAgent: "" };
@@ -261,10 +395,169 @@ export const AccessVerifierResponse: MessageFns<AccessVerifierResponse> = {
   },
 };
 
+function createBaseCreateSessionRequest(): CreateSessionRequest {
+  return { userId: "", ip: "", userAgent: "" };
+}
+
+export const CreateSessionRequest: MessageFns<CreateSessionRequest> = {
+  encode(message: CreateSessionRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.userId !== "") {
+      writer.uint32(10).string(message.userId);
+    }
+    if (message.ip !== "") {
+      writer.uint32(18).string(message.ip);
+    }
+    if (message.userAgent !== "") {
+      writer.uint32(26).string(message.userAgent);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateSessionRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateSessionRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.userId = reader.string();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.ip = reader.string();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.userAgent = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreateSessionRequest {
+    return {
+      userId: isSet(object.userId) ? globalThis.String(object.userId) : "",
+      ip: isSet(object.ip) ? globalThis.String(object.ip) : "",
+      userAgent: isSet(object.userAgent) ? globalThis.String(object.userAgent) : "",
+    };
+  },
+
+  toJSON(message: CreateSessionRequest): unknown {
+    const obj: any = {};
+    if (message.userId !== "") {
+      obj.userId = message.userId;
+    }
+    if (message.ip !== "") {
+      obj.ip = message.ip;
+    }
+    if (message.userAgent !== "") {
+      obj.userAgent = message.userAgent;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CreateSessionRequest>, I>>(base?: I): CreateSessionRequest {
+    return CreateSessionRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CreateSessionRequest>, I>>(object: I): CreateSessionRequest {
+    const message = createBaseCreateSessionRequest();
+    message.userId = object.userId ?? "";
+    message.ip = object.ip ?? "";
+    message.userAgent = object.userAgent ?? "";
+    return message;
+  },
+};
+
+function createBaseCreateSessionResponse(): CreateSessionResponse {
+  return { refreshToken: "" };
+}
+
+export const CreateSessionResponse: MessageFns<CreateSessionResponse> = {
+  encode(message: CreateSessionResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.refreshToken !== "") {
+      writer.uint32(10).string(message.refreshToken);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): CreateSessionResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseCreateSessionResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.refreshToken = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): CreateSessionResponse {
+    return { refreshToken: isSet(object.refreshToken) ? globalThis.String(object.refreshToken) : "" };
+  },
+
+  toJSON(message: CreateSessionResponse): unknown {
+    const obj: any = {};
+    if (message.refreshToken !== "") {
+      obj.refreshToken = message.refreshToken;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<CreateSessionResponse>, I>>(base?: I): CreateSessionResponse {
+    return CreateSessionResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<CreateSessionResponse>, I>>(object: I): CreateSessionResponse {
+    const message = createBaseCreateSessionResponse();
+    message.refreshToken = object.refreshToken ?? "";
+    return message;
+  },
+};
+
 /** The Access service definition */
 export type AccessServiceService = typeof AccessServiceService;
 export const AccessServiceService = {
-  /** Verify access token across all services */
+  createSession: {
+    path: "/access.AccessService/CreateSession",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: CreateSessionRequest): Buffer => Buffer.from(CreateSessionRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): CreateSessionRequest => CreateSessionRequest.decode(value),
+    responseSerialize: (value: CreateSessionResponse): Buffer =>
+      Buffer.from(CreateSessionResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): CreateSessionResponse => CreateSessionResponse.decode(value),
+  },
   verify: {
     path: "/access.AccessService/verify",
     requestStream: false,
@@ -276,15 +569,39 @@ export const AccessServiceService = {
       Buffer.from(AccessVerifierResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): AccessVerifierResponse => AccessVerifierResponse.decode(value),
   },
+  delAllsessions: {
+    path: "/access.AccessService/delAllsessions",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: delsessionsRequest): Buffer => Buffer.from(delsessionsRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): delsessionsRequest => delsessionsRequest.decode(value),
+    responseSerialize: (value: delsessionsResponse): Buffer => Buffer.from(delsessionsResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): delsessionsResponse => delsessionsResponse.decode(value),
+  },
 } as const;
 
 export interface AccessServiceServer extends UntypedServiceImplementation {
-  /** Verify access token across all services */
+  createSession: handleUnaryCall<CreateSessionRequest, CreateSessionResponse>;
   verify: handleUnaryCall<AccessVerifierRequest, AccessVerifierResponse>;
+  delAllsessions: handleUnaryCall<delsessionsRequest, delsessionsResponse>;
 }
 
 export interface AccessServiceClient extends Client {
-  /** Verify access token across all services */
+  createSession(
+    request: CreateSessionRequest,
+    callback: (error: ServiceError | null, response: CreateSessionResponse) => void,
+  ): ClientUnaryCall;
+  createSession(
+    request: CreateSessionRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: CreateSessionResponse) => void,
+  ): ClientUnaryCall;
+  createSession(
+    request: CreateSessionRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: CreateSessionResponse) => void,
+  ): ClientUnaryCall;
   verify(
     request: AccessVerifierRequest,
     callback: (error: ServiceError | null, response: AccessVerifierResponse) => void,
@@ -299,6 +616,21 @@ export interface AccessServiceClient extends Client {
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: AccessVerifierResponse) => void,
+  ): ClientUnaryCall;
+  delAllsessions(
+    request: delsessionsRequest,
+    callback: (error: ServiceError | null, response: delsessionsResponse) => void,
+  ): ClientUnaryCall;
+  delAllsessions(
+    request: delsessionsRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: delsessionsResponse) => void,
+  ): ClientUnaryCall;
+  delAllsessions(
+    request: delsessionsRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: delsessionsResponse) => void,
   ): ClientUnaryCall;
 }
 
