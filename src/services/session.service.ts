@@ -1,13 +1,25 @@
+import { deviceId } from "../cache/deviceId.cache";
 import { SessionsRepository } from "../repositories/sessions.repository";
 import { TokenUtil } from "../utils/token.util";
 
 export class SessionService {
+  private readonly Cache;
+
   private readonly SessionRepo: SessionsRepository;
   private readonly tokenUtil: TokenUtil;
   constructor(SessionRepo?: SessionsRepository, tokenUtil?: TokenUtil) {
     this.SessionRepo = SessionRepo ?? new SessionsRepository();
     this.tokenUtil = tokenUtil ?? new TokenUtil();
+    this.Cache = new deviceId();
   }
+
+  deleteAll = async (user_id: string) => {
+    const result = await this.SessionRepo.getAllSessionbyId(user_id);
+    await this.SessionRepo.deleteSessionbyUserId(user_id);
+    for (let i = 0; i < result.length; i++) {
+      await this.Cache.delAllDeviceid(result[i].id);
+    }
+  };
   public createSession = async (
     user_id: string,
     ip: string,

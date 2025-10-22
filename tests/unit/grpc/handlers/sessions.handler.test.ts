@@ -4,7 +4,7 @@ import { ServerUnaryCall, sendUnaryData } from "@grpc/grpc-js";
 import {
   CreateSessionRequest,
   CreateSessionResponse,
-} from "../../../../src/grpc/generated/session";
+} from "../../../../src/grpc/generated/access";
 
 jest.mock("../../../../src/services/session.service");
 

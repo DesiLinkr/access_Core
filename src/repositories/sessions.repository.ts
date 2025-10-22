@@ -26,6 +26,19 @@ export class SessionsRepository {
     );
     return result.rows || null;
   };
+  public deleteSessionbyUserId = async (user_id: string) => {
+    await this.database.query("DELETE FROM sessions WHERE user_id = $1  ", [
+      user_id,
+    ]);
+  };
+
+  public getAllSessionIDbyId = async (user_id: string) => {
+    const result = await this.database.query(
+      `SELECT id AS id  FROM sessions WHERE user_id = $1 `,
+      [user_id]
+    );
+    return result.rows || null;
+  };
 
   public getSession = async (
     user_id: string,

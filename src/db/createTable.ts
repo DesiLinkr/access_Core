@@ -1,5 +1,5 @@
 import pool from "../db/client";
-import { CREATE_SESSIONS_TABLE } from "../models/sessionsModel";
+import { CREATE_SESSIONS_TABLE } from "./models/sessionsModel";
 
 (async () => {
   try {

@@ -1,7 +1,9 @@
 import {
   CreateSessionRequest,
   CreateSessionResponse,
-} from "../generated/session";
+  delsessionsRequest,
+  delsessionsResponse,
+} from "../generated/access";
 import { SessionService } from "../../services/session.service";
 import { sendUnaryData, ServerUnaryCall } from "@grpc/grpc-js";
 export class SessionsHandlers {
@@ -24,6 +26,19 @@ export class SessionsHandlers {
       callback(null, { refreshToken: session.refreshToken });
     } catch (error: any) {
       callback(error, null);
+    }
+  };
+
+  public delAllSession = async (
+    call: ServerUnaryCall<delsessionsRequest, delsessionsResponse>,
+    callback: sendUnaryData<delsessionsResponse>
+  ) => {
+    try {
+      const { userId } = call.request;
+      await this.SessionService.deleteAll(userId);
+      callback(null, { msg: "success" });
+    } catch (err: any) {
+      callback(err, null);
     }
   };
 }
