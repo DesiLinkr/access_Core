@@ -18,6 +18,7 @@ import {
   type ServiceError,
   type UntypedServiceImplementation,
 } from "@grpc/grpc-js";
+import { Empty } from "./google/protobuf/empty";
 
 export const protobufPackage = "access";
 
@@ -578,12 +579,22 @@ export const AccessServiceService = {
     responseSerialize: (value: delsessionsResponse): Buffer => Buffer.from(delsessionsResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): delsessionsResponse => delsessionsResponse.decode(value),
   },
+  deleteAllExpiredSessions: {
+    path: "/access.AccessService/deleteAllExpiredSessions",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: Empty): Buffer => Buffer.from(Empty.encode(value).finish()),
+    requestDeserialize: (value: Buffer): Empty => Empty.decode(value),
+    responseSerialize: (value: delsessionsResponse): Buffer => Buffer.from(delsessionsResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): delsessionsResponse => delsessionsResponse.decode(value),
+  },
 } as const;
 
 export interface AccessServiceServer extends UntypedServiceImplementation {
   createSession: handleUnaryCall<CreateSessionRequest, CreateSessionResponse>;
   verify: handleUnaryCall<AccessVerifierRequest, AccessVerifierResponse>;
   delAllsessions: handleUnaryCall<delsessionsRequest, delsessionsResponse>;
+  deleteAllExpiredSessions: handleUnaryCall<Empty, delsessionsResponse>;
 }
 
 export interface AccessServiceClient extends Client {
@@ -628,6 +639,21 @@ export interface AccessServiceClient extends Client {
   ): ClientUnaryCall;
   delAllsessions(
     request: delsessionsRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: delsessionsResponse) => void,
+  ): ClientUnaryCall;
+  deleteAllExpiredSessions(
+    request: Empty,
+    callback: (error: ServiceError | null, response: delsessionsResponse) => void,
+  ): ClientUnaryCall;
+  deleteAllExpiredSessions(
+    request: Empty,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: delsessionsResponse) => void,
+  ): ClientUnaryCall;
+  deleteAllExpiredSessions(
+    request: Empty,
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: delsessionsResponse) => void,

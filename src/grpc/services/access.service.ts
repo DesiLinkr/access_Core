@@ -13,4 +13,5 @@ export const accessServiceHandlers: AccessServiceServer = {
   verify: accesshandlers.verifyAccessToken,
   createSession: sessionsHandlers.genrateSession,
   delAllsessions: sessionsHandlers.delAllSession,
+  deleteAllExpiredSessions: sessionsHandlers.delAllExpired,
 };

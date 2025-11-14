@@ -4,7 +4,9 @@ import { ServerUnaryCall, sendUnaryData } from "@grpc/grpc-js";
 import {
   CreateSessionRequest,
   CreateSessionResponse,
+  delsessionsResponse,
 } from "../../../../src/grpc/generated/access";
+import { Empty } from "../../../../src/grpc/generated/google/protobuf/empty";
 
 jest.mock("../../../../src/services/session.service");
 
@@ -16,6 +18,7 @@ describe("SessionsHandlers", () => {
     mockSessionService = new (SessionService as jest.Mock)();
     // Manually mock the createSession method
     mockSessionService.createSession = jest.fn();
+    mockSessionService.deleteExpired = jest.fn();
     // Inject the mock into the handler
     handlers = new SessionsHandlers();
     // @ts-ignore: override private property for testing
@@ -51,6 +54,31 @@ describe("SessionsHandlers", () => {
 
     await handlers.genrateSession(call, callback);
 
+    expect(callback).toHaveBeenCalledWith(error, null);
+  });
+
+  it("should call deleteExpired and callback with success message", async () => {
+    const call = {} as ServerUnaryCall<Empty, delsessionsResponse>;
+    const callback = jest.fn();
+
+    await handlers.delAllExpired(call, callback);
+
+    expect(mockSessionService.deleteExpired).toHaveBeenCalled();
+    expect(callback).toHaveBeenCalledWith(null, {
+      msg: "expired sessions deleted",
+    });
+  });
+
+  it("should callback with error when deleteExpired throws", async () => {
+    const error = new Error("DB error");
+    mockSessionService.deleteExpired.mockRejectedValueOnce(error);
+
+    const call = {} as ServerUnaryCall<Empty, delsessionsResponse>;
+    const callback = jest.fn();
+
+    await handlers.delAllExpired(call, callback);
+
+    expect(mockSessionService.deleteExpired).toHaveBeenCalled();
     expect(callback).toHaveBeenCalledWith(error, null);
   });
 });

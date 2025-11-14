@@ -8,6 +8,7 @@ describe("SessionService", () => {
 
   beforeEach(() => {
     mockSessionRepo = {
+      removeExpiredsessions: jest.fn(),
       getAllSessionbyId: jest.fn(),
       deleteSessionbyUserId: jest.fn(),
       getSession: jest.fn(),
@@ -144,5 +145,21 @@ describe("SessionService", () => {
         service.createSession(userId, ip, userAgent)
       ).rejects.toThrow("DB fail");
     });
+  });
+
+  it("should call removeExpiredsessions and return success message", async () => {
+    mockSessionRepo.removeExpiredsessions.mockResolvedValue(true);
+
+    const result = await service.deleteExpired();
+
+    expect(mockSessionRepo.removeExpiredsessions).toHaveBeenCalled();
+  });
+
+  it("should throw if repository throws", async () => {
+    mockSessionRepo.removeExpiredsessions.mockRejectedValue(
+      new Error("DB error")
+    );
+
+    await expect(service.deleteExpired()).rejects.toThrow("DB error");
   });
 });

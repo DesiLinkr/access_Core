@@ -94,13 +94,13 @@ describe("SessionsRepository", () => {
 
   it("should delete expired sessions correctly", async () => {
     mockQuery.mockResolvedValueOnce({});
-    const time = new Date(Date.now() - 7 * 86400000).getTime();
+    const time = new Date(Date.now() - 7 * 86400000).getTime() / 1000;
 
-    await sessionsRepo.removeExpiredsessions("sess1");
+    await sessionsRepo.removeExpiredsessions();
 
     expect(mockQuery).toHaveBeenCalledWith(
-      `DELETE FROM sessions WHERE id= $1 AND expires_at=$2`,
-      ["sess1", time]
+      `DELETE FROM sessions WHERE  expires_at <= to_timestamp($1)`,
+      [time]
     );
   });
 
