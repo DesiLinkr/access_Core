@@ -59,10 +59,13 @@ export class SessionsRepository {
     );
   };
 
-  public removeExpiredsessions = async (user_id: string) => {
+  public removeExpiredsessions = async () => {
+    let time = new Date(Date.now() - 7 * 86400000).getTime() / 1000;
+    console.log(time);
+
     return await this.database.query(
-      `DELETE FROM sessions WHERE id= $1 AND expires_at=$2`,
-      [user_id, new Date(Date.now() - 7 * 86400000).getTime()]
+      `DELETE FROM sessions WHERE  expires_at <= to_timestamp($1)`,
+      [time]
     );
   };
 

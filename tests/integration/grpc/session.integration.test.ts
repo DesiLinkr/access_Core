@@ -6,6 +6,7 @@ import {
 } from "../../../src/grpc/generated/access";
 import { createGrpcServer } from "../../../src/grpc/server";
 import { v4 as uuidv4 } from "uuid";
+import { Empty } from "../../../src/grpc/generated/google/protobuf/empty";
 
 const GRPC_PORT = 5052;
 const GRPC_ADDR = `localhost:${GRPC_PORT}`;
@@ -69,6 +70,17 @@ describe("gRPC SessionService Integration", () => {
       expect(err).toBeNull();
       expect(response).toBeDefined();
       expect(response?.msg).toBe("success");
+      done();
+    });
+  });
+
+  it("should delete all expired sessions and return success", (done) => {
+    const request: Empty = {};
+
+    client.deleteAllExpiredSessions(request, (err, response) => {
+      expect(err).toBeNull();
+      expect(response).toBeDefined();
+      expect(response?.msg).toBe("expired sessions deleted");
       done();
     });
   });

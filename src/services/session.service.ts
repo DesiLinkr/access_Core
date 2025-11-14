@@ -12,7 +12,9 @@ export class SessionService {
     this.tokenUtil = tokenUtil ?? new TokenUtil();
     this.Cache = new deviceId();
   }
-
+  deleteExpired = async () => {
+    await this.SessionRepo.removeExpiredsessions();
+  };
   deleteAll = async (user_id: string) => {
     const result = await this.SessionRepo.getAllSessionbyId(user_id);
     await this.SessionRepo.deleteSessionbyUserId(user_id);
