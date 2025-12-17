@@ -81,33 +81,6 @@ describe("GET /api/access/token/refresh", () => {
   });
 });
 
-describe("GET /api/access/me ", () => {
-  it("should return user info for valid token/session", async () => {
-    const res = await request(app)
-      .get("/api/access/me")
-      .set("Authorization", `Bearer ${validAccessToken}`)
-      .set("User-Agent", "integration-test")
-      .set("X-Forwarded-For", "127.0.0.1");
-
-    expect(res.statusCode).toBe(200);
-  });
-
-  it("should return 401 when no token is provided", async () => {
-    const res = await request(app).get("/api/access/me");
-    expect(res.statusCode).toBe(401);
-  });
-
-  it("should return 403 for invalid session IP/user-agent", async () => {
-    const res = await request(app)
-      .get("/api/access/me")
-      .set("Authorization", `Bearer ${validAccessToken}`)
-      .set("User-Agent", "FakeAgent/1.0")
-      .set("X-Forwarded-For", "1.2.3.4");
-
-    expect(res.statusCode).toBe(403);
-  });
-});
-
 describe("GET /api/access/history", () => {
   it("should return history for valid token/session", async () => {
     const res = await request(app)

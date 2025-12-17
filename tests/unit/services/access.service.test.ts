@@ -18,17 +18,6 @@ jest.mock("../../../src/redis/client", () => ({
   },
 }));
 
-jest.mock("../../../src/utils/grpc.util", () => ({
-  getUserInfoById: jest.fn(),
-}));
-
-import { getUserInfoById } from "../../../src/utils/grpc.util";
-
-(getUserInfoById as jest.Mock).mockResolvedValue({
-  id: "user123",
-  name: "John Doe",
-  email: "john.doe@example.com",
-});
 const refresh_token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiZmEyZGE0MDYtNTE4YS00NjY3LThiZDgtZTE0NmI5YmQxMTU4IiwiaWF0IjoxNzUzMjU1OTU4fQ.3_eGmQeq65LUHO4N-REQgAbBNvPIntNgy-9FJuk0hto";
 
@@ -71,23 +60,6 @@ describe("AccessTokenService", () => {
     expect(result).toEqual({
       error: "Missing or invalid refresh token",
       status: 400,
-    });
-  });
-
-  it("should return user information if session is valid", async () => {
-    const authHeader = "Bearer valid_token";
-    const ip = "192.168.1.1";
-    const user_agent = "Mozilla/5.0";
-    const decode = { session_id: "valid_session_id", user_id: "user123" };
-    const mockUser = {
-      id: "user123",
-      name: "John Doe",
-      email: "john.doe@example.com",
-    };
-
-    const result = await accessTokenService.getUser("user123");
-    expect(result).toEqual({
-      UserInfo: mockUser,
     });
   });
 

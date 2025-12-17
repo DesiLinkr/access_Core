@@ -12,7 +12,15 @@ acesssRouter.get(
   requestMeta,
   accessController.issueAccessToken
 );
+acesssRouter.delete("/logout", (req, res) => {
+  res.clearCookie("refreshToken", {
+    httpOnly: true,
+    secure: true,
+    sameSite: "none",
+    path: "/",
+  });
+  return res.status(200).json({ message: "Logged out" });
+});
 
-acesssRouter.get("/me", verifyAccessToken, accessController.getUserInfo);
 acesssRouter.get("/history", verifyAccessToken, accessController.acesssHistory);
 export default acesssRouter;

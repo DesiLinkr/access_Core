@@ -28,18 +28,6 @@ export class AccessController {
       res.status(500).json("Internal server error");
     }
   };
-  public getUserInfo = async (req: Request, res: Response) => {
-    try {
-      const result: any = await this.accessService.getUser((req as any).userId);
-      if ("error" in result) {
-        res.status(result.status).json({ message: result.error });
-        return;
-      }
-      res.status(200).json(result);
-    } catch (error) {
-      res.status(500).json("Internal server error");
-    }
-  };
 
   public acesssHistory = async (req: Request, res: Response) => {
     try {

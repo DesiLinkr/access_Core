@@ -9,7 +9,7 @@ jest.mock("../../../src/redis/client", () => ({
     on: jest.fn(),
   },
 }));
-
+333;
 describe("AccessToken controller", () => {
   let controller: AccessController;
 
@@ -112,50 +112,6 @@ describe("AccessToken controller", () => {
 
     expect(res.status).toHaveBeenCalledWith(200);
     expect(res.json).toHaveBeenCalledWith(mockResult);
-  });
-
-  it("should handle errors and return 500", async () => {
-    const req = {
-      headers: { authorization: "Bearer token123" },
-      clientInfo: {
-        ip: "127.0.0.1",
-        user_agent: "Mozilla/5.0",
-      },
-    } as Partial<Request> as Request;
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    } as unknown as Response;
-
-    await controller.getUserInfo(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith("Internal server error");
-  });
-
-  it("should call getUser and return 200 with user info", async () => {
-    const req = {
-      headers: { authorization: "Bearer token123" },
-    } as Partial<Request> as Request;
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    } as unknown as Response;
-
-    const mockUserData = {
-      id: "user123",
-      name: "Harsh",
-      email: "harsh@example.com",
-    };
-
-    // 🧪 Mock service to resolve with user data
-    accessTokenServiceMock.getUser.mockResolvedValue(mockUserData as any);
-
-    await controller.getUserInfo(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith(mockUserData);
   });
 
   it("should return 200 with sessions if found", async () => {
