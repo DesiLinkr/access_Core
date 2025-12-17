@@ -4,6 +4,7 @@ import "dotenv/config";
 import cookieParser from "cookie-parser";
 import { createGrpcServer } from "./grpc/server";
 import * as grpc from "@grpc/grpc-js";
+import cors from "cors";
 class App {
   private express: Application;
   private PORT: number;
@@ -17,6 +18,13 @@ class App {
   }
 
   private middleware = () => {
+    this.express.use(
+      cors({
+        origin: "http://localhost:3000",
+        credentials: true,
+      })
+    );
+
     this.express.use(express.json());
     this.express.use(cookieParser());
   };

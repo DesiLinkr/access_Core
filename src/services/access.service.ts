@@ -1,6 +1,6 @@
 import { deviceId } from "../cache/deviceId.cache";
 import { SessionsRepository } from "../repositories/sessions.repository";
-import { getUserInfoById } from "../utils/grpc.util";
+
 import { TokenUtil } from "../utils/token.util";
 
 export class AccessService {
@@ -62,14 +62,6 @@ export class AccessService {
       db.id
     );
     return { access_token };
-  };
-
-  getUser = async (id: string) => {
-    const result = await getUserInfoById({ userId: id });
-
-    return {
-      UserInfo: result,
-    };
   };
 
   getHistory = async (id: string) => {
