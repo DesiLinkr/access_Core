@@ -44,8 +44,8 @@ class App {
   };
 
   public startServers = async (port: number) => {
+    this.PORT = Number(process.env.PORT) || port;
     this.express.listen(this.PORT, () => {
-      this.PORT = Number(process.env.PORT) || port;
       console.log(`Server running at http://localhost:${this.PORT}`);
     });
 
